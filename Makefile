@@ -6,7 +6,7 @@
 PYTHON := python3
 PIP := pip3
 APP := app.py
-PORT := 5000
+PORT := 5001
 HOST := 0.0.0.0
 DOCKER_IMAGE := chromedriving
 DOCKER_TAG := latest

@@ -51,10 +51,10 @@ Or manually:
 python app.py
 ```
 
-The server will start on port 5000. Access the API at:
+The server will start on port 5001. Access the API at:
 
 ```
-http://localhost:5000/
+http://localhost:5001/
 ```
 
 ## Running with Docker
@@ -80,7 +80,7 @@ make docker-run
 Or manually:
 
 ```bash
-docker run -d -p 5000:5000 --name chromedriving-container chromedriving:latest
+docker run -d -p 5001:5001 --name chromedriving-container chromedriving:latest
 ```
 
 ### Stopping the Docker Container

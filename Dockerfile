@@ -66,7 +66,7 @@ RUN chmod -R 755 /app
 USER appuser
 
 # Expose the port the app runs on
-EXPOSE 5000
+EXPOSE 5001
 
 # Command to run the application with Xvfb
 CMD ["sh", "-c", "xvfb-run -a python app.py"] 
