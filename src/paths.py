@@ -1,5 +1,5 @@
 import os
-from .url_utils import format_url_to_filename
+from src.url_utils import format_url_to_filename
 
 # Determine the assets directory path relative to this script's location
 assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')

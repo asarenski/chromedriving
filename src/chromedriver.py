@@ -18,8 +18,8 @@ from selenium.common.exceptions import (
 )
 from webdriver_manager.chrome import ChromeDriverManager
 
-from paths import assets_dir, get_screenshot_path
-from url_utils import format_url_to_filename
+from src.paths import assets_dir, get_screenshot_path
+from src.url_utils import format_url_to_filename
 
 # Configure logging
 logging.basicConfig(
