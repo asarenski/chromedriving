@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Virtual environment
+venv/
+env/
+ENV/
+.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# Logs
+*.log
+
+# Screenshots (these will be generated when the container runs)
+assets/*.png
+
+# Memory bank is only for documentation
+memory-bank/
+
+# Docker related files
+Dockerfile
+.dockerignore 
