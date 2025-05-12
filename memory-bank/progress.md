@@ -26,21 +26,20 @@
   - Screenshot management commands
   - Docker commands for build, run, and stop
 - Docker containerization:
-  - Dockerfile with Chrome, ChromeDriver, Tesseract, and Poppler
+  - Dockerfile with Chromium, ChromeDriver, Tesseract, and Poppler
   - Non-root user configuration for security
   - Docker build, run, and stop commands in Makefile
   - .dockerignore file for optimized builds
   - Xvfb setup for headless browser operation
+- Successfully resolved ChromeDriver setup issues in Docker environment
 
 ## What's In Progress
 
-- Preparation for transition from Google Chrome to Chromium
+- Improving OCR integration with Tesseract
+- Enhancing screenshot processing pipeline
 
 ## What's Left to Build
 
-- Implementation of Chromium instead of Google Chrome
-- OCR integration with Tesseract
-- Processing pipeline for screenshots
 - Testing framework
 - Comprehensive documentation
 - Admin interface (if needed)
@@ -53,15 +52,21 @@ We've completed a comprehensive enhancement of the error handling system through
 
 A Makefile has been created to simplify build and run commands for the application. It includes commands for setup, running the application in different modes, cleaning up files, and managing screenshots.
 
-Docker containerization has been implemented with a Dockerfile that includes all necessary dependencies like Chrome, ChromeDriver, Tesseract, and Poppler. The Docker image is configured with appropriate permissions and runs as a non-root user for enhanced security. The Makefile has been updated with commands for building, running, and stopping the Docker container.
+Docker containerization has been implemented with a Dockerfile that includes all necessary dependencies like Chromium, ChromeDriver, Tesseract, and Poppler. The Docker image is configured with appropriate permissions and runs as a non-root user for enhanced security. The Makefile has been updated with commands for building, running, and stopping the Docker container.
 
-The next step is to transition from Google Chrome to Chromium, and then implement OCR capabilities using Tesseract to extract text from captured screenshots.
+We've successfully implemented and fixed the ChromeDriver setup in the Docker environment, resolving the "Status code was: -5" error. The key improvements include:
+
+- Using the Debian package manager to install compatible versions of Chromium and ChromeDriver
+- Adding platform-specific configurations for both macOS and Linux environments
+- Implementing better error handling and debugging for ChromeDriver initialization
+- Configuring proper permissions for the ChromeDriver binary
+- Adding environmental variables to ensure Chrome/Chromium binary paths are correctly identified
+
+With these fixes, the system can now successfully capture screenshots of websites when running in the Docker container.
 
 ## Known Issues
 
 - No testing framework in place
-- OCR integration pending
-- Reliance on Google Chrome rather than Chromium
 
 ## Evolution of Project Decisions
 
@@ -75,7 +80,8 @@ The next step is to transition from Google Chrome to Chromium, and then implemen
 - Added RESTful API endpoints for screenshot retrieval
 - Enhanced error handling with retry mechanisms and specific error types
 - Implemented Docker containerization for consistent deployment
-- Decision to transition from Google Chrome to Chromium for better compatibility
+- Successfully transitioned from Google Chrome to Chromium for better compatibility
+- Fixed ChromeDriver issues in Docker environment by using system packages and proper configuration
 
 ## Recent Implementation Details
 
@@ -96,9 +102,10 @@ The next step is to transition from Google Chrome to Chromium, and then implemen
   - Better handling of special characters and long paths
 - Added root endpoint with API documentation
 - Updated server configuration for better production readiness
-- Implemented Docker containerization:
-  - Created Dockerfile with all necessary dependencies
-  - Configured non-root user for security
-  - Setup Xvfb for headless browser operation
-  - Added Docker commands to Makefile
-  - Created .dockerignore for optimized builds
+- Enhanced Docker containerization:
+  - Updated Dockerfile to use Chromium and ChromeDriver from Debian repositories
+  - Added platform-specific configurations for ChromeDriver setup
+  - Created a debug script for troubleshooting Chrome/ChromeDriver issues
+  - Improved error handling and permissions management
+  - Fixed ChromeDriver initialization in containerized environment
+  - Added updated headless browser configuration for newer Chrome versions

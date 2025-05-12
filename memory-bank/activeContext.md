@@ -11,8 +11,9 @@ The project is in its implementation stage. The core focus areas are:
 - Adding functionality to retrieve captured screenshots (completed)
 - Implementing error handling improvements for screenshot capture edge cases (completed)
 - Creating Docker containerization (completed)
-- Transitioning from Google Chrome to Chromium
-- Integrating OCR capabilities
+- Transitioning from Google Chrome to Chromium (completed)
+- Improving ChromeDriver setup in Docker environment (completed)
+- Enhancing OCR capabilities with Tesseract
 
 ## Recent Changes
 
@@ -41,17 +42,24 @@ The project is in its implementation stage. The core focus areas are:
   - Added screenshot management commands
   - Added Docker integration commands
 - Added Docker support for containerization:
-  - Created Dockerfile with all necessary dependencies (Chrome, Tesseract, Poppler)
+  - Created Dockerfile with all necessary dependencies (Chromium, ChromeDriver, Tesseract, Poppler)
   - Configured appropriate permissions and non-root user for security
   - Updated Makefile with Docker commands (build, run, stop)
   - Added .dockerignore file to optimize Docker build
+- Fixed ChromeDriver setup issues in Docker environment:
+  - Updated Dockerfile to use Chromium and ChromeDriver from Debian repositories
+  - Added platform-specific configurations for different operating systems
+  - Implemented better error handling and debugging for driver initialization
+  - Added proper permissions management for executables
+  - Fixed headless browser configuration for newer Chrome/Chromium versions
 
 ## Next Steps
 
 1. ~~Create a Dockerfile so the service can be run in docker.~~ (Completed)
 2. ~~Create a Makefile so build and run commands are easy.~~ (Completed)
-3. Setup the project to use Chromium instead of Google Chrome.
-4. Implement OCR capabilities using Tesseract.
+3. ~~Setup the project to use Chromium instead of Google Chrome.~~ (Completed)
+4. Enhance OCR capabilities using Tesseract.
+5. Implement comprehensive testing framework.
 
 ## Active Decisions
 
@@ -62,7 +70,9 @@ The project is in its implementation stage. The core focus areas are:
 - Added RESTful endpoints for screenshot retrieval with multiple access methods
 - Created Makefile for simplified build and run commands
 - Using Docker for containerized deployment with all dependencies
-- Planning to transition from Google Chrome to Chromium
+- Successfully transitioned from Google Chrome to Chromium
+- Implemented platform-specific configurations for ChromeDriver initialization
+- Using system packages for Chromium and ChromeDriver in Docker for better compatibility
 
 ## Important Patterns and Preferences
 
@@ -76,6 +86,7 @@ The project is in its implementation stage. The core focus areas are:
 - RESTful API design for resource access
 - Comprehensive logging for debugging and monitoring
 - Containerized deployment for consistency across environments
+- Platform-specific configurations for cross-environment compatibility
 
 ## Learnings and Project Insights
 
@@ -87,4 +98,8 @@ The project is in its implementation stage. The core focus areas are:
 - Retry mechanisms are important for handling transient failures in web interactions
 - URL validation and normalization is critical for handling user input reliably
 - Containerization simplifies deployment and ensures consistent dependencies
-- Xvfb is necessary for running Chrome in headless mode in a Docker container
+- Xvfb is necessary for running Chromium in headless mode in a Docker container
+- Platform-specific configurations are essential for ChromeDriver to work properly across different environments
+- Using system packages (apt-get) for Chromium and ChromeDriver in Docker provides better stability than downloading binaries
+- The ChromeDriver needs proper executable permissions in containerized environments
+- Newer versions of Chrome/Chromium require updated headless configuration ('--headless=new')

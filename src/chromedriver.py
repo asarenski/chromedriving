@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import logging
+import platform
 from urllib.parse import urlparse
 
 from selenium import webdriver
@@ -59,18 +60,87 @@ def validate_url(url):
 def setup_driver():
     """
     Sets up and returns a Chrome WebDriver with appropriate options.
-    Handles potential setup failures.
+    Handles potential setup failures and adapts to the operating system.
     """
     try:
         options = Options()
-        options.add_argument('--headless')
+        options.add_argument('--headless=new')  # Updated headless mode
         options.add_argument(f'--window-size=1920,{SCROLL_HEIGHT}')
         options.add_argument('--disable-gpu')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--disable-setuid-sandbox')
+        options.add_argument('--remote-debugging-port=9222')
+        options.add_argument('--disable-logging')
         
-        # Set page load timeout
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        # Add platform-specific configuration
+        system = platform.system()
+        logger.info(f"Setting up Chrome driver on {system} platform")
+        
+        if system == "Darwin":  # macOS
+            # Common Chrome locations on macOS
+            chrome_paths = [
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+                "/Applications/Chromium.app/Contents/MacOS/Chromium"
+            ]
+            
+            chrome_found = False
+            for path in chrome_paths:
+                if os.path.exists(path):
+                    options.binary_location = path
+                    logger.info(f"Using Chrome binary at: {path}")
+                    chrome_found = True
+                    break
+            
+            if not chrome_found:
+                logger.warning("Chrome binary not found in standard locations. Using default.")
+        elif system == "Linux":  # Linux/Docker
+            # Check for Chromium
+            chromium_path = "/usr/bin/chromium"
+            if os.path.exists(chromium_path):
+                options.binary_location = chromium_path
+                logger.info(f"Using Chromium binary at: {chromium_path}")
+            else:
+                logger.warning("Chromium binary not found at expected location")
+        
+        # Check for system ChromeDriver
+        system_chromedriver = "/usr/bin/chromedriver"
+        if os.path.exists(system_chromedriver):
+            logger.info(f"Using system ChromeDriver at {system_chromedriver}")
+            # Log permissions and executable status for debugging
+            try:
+                import stat
+                st = os.stat(system_chromedriver)
+                logger.info(f"ChromeDriver permissions: {stat.filemode(st.st_mode)}")
+                logger.info(f"ChromeDriver is executable: {os.access(system_chromedriver, os.X_OK)}")
+            except Exception as e:
+                logger.warning(f"Failed to check ChromeDriver permissions: {e}")
+                
+            # Create the service with appropriate permissions
+            service = Service(executable_path=system_chromedriver)
+            
+            # Set up driver with version-appropriate configuration
+            try:
+                logger.info("Starting Chrome with system ChromeDriver")
+                driver = webdriver.Chrome(service=service, options=options)
+            except Exception as e:
+                logger.error(f"Failed to start Chrome with system ChromeDriver: {e}")
+                # If it fails, try different permissions
+                try:
+                    logger.info("Attempting to run ChromeDriver with sudo")
+                    # This is a fallback that will likely fail in Docker, but it's worth a try
+                    import subprocess
+                    subprocess.run(["chmod", "a+x", system_chromedriver])
+                    driver = webdriver.Chrome(service=service, options=options)
+                except Exception as e2:
+                    logger.error(f"All attempts to start ChromeDriver failed: {e2}")
+                    raise RuntimeError(f"Unable to start ChromeDriver after multiple attempts: {e2}")
+        else:
+            # Try auto-installation as fallback
+            logger.warning("System ChromeDriver not found, using WebDriver Manager")
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        
         driver.set_page_load_timeout(PAGE_LOAD_TIMEOUT)
         
         return driver
